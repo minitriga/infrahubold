@@ -6,15 +6,27 @@ import { CONFIG } from "./config/config";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
+import { PostHogProvider } from "posthog-js/react";
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
 export const graphQLClient = new GraphQLClient(CONFIG.GRAPHQL_URL("main"));
 
+
+const options = {
+  api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
+}
+
 root.render(
   <React.StrictMode>
-    <App />
+    <PostHogProvider 
+      apiKey={process.env.REACT_APP_PUBLIC_POSTHOG_KEY}
+      options={options}
+    >
+      <App />
+    </PostHogProvider>
   </React.StrictMode>
 );
 

@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { CheckIcon, PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useAtom } from "jotai";
+import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -91,6 +92,23 @@ export default function ObjectItems() {
   const columns = getItemsColumn(schema);
 
   const navigate = useNavigate();
+
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    console.log({
+      posthog,
+    })
+    posthog?.identify("gau-1-ops", {
+      email: "gaurav.saluja@opsmill.com",
+    })
+    posthog?.group("company", "OpsMill")
+  }, [posthog]);
+
+  useEffect(() => {
+    console.log("Capture view");
+    posthog?.capture(`Viewed listing for: ${objectname}`);
+  }, [objectname, posthog]);
 
   useEffect(
     () => {
