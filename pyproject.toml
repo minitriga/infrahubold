@@ -23,6 +23,7 @@ toml = "^0.10.2"
 jsonlines = "^3.0.0"
 deepdiff = "^5.8.1"
 ujson = "^5.7"
+sentry-sdk = {extras = ["fastapi"], version = "^1.17.0"}
 
 [tool.poetry.group.server.dependencies]
 fastapi = "~0.89"

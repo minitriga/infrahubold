@@ -6,6 +6,9 @@ from typing import List, Optional
 import graphene
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.logger import logger
+
+import sentry_sdk
+
 from graphql import graphql
 from neo4j import AsyncSession
 from pydantic import BaseModel
@@ -48,6 +51,16 @@ app = FastAPI(
 gunicorn_logger = logging.getLogger("gunicorn.error")
 logger.handlers = gunicorn_logger.handlers
 
+
+sentry_sdk.init(
+    dsn="https://aca974cd83044bbe85d20c6872c7a07f@o4504893920247808.ingest.sentry.io/4504893931454464",
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production,
+    traces_sample_rate=1.0,
+    release="infrahub-backend@0.2.0"
+)
 
 async def get_session(request: Request) -> AsyncSession:
     session = request.app.state.db.session(database=config.SETTINGS.database.database)
@@ -345,6 +358,10 @@ async def transform_python(
 
     return JSONResponse(status_code=response.status, content={"errors": response.errors})
 
+
+@app.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0
 
 app.add_middleware(
     AuthenticationMiddleware,
