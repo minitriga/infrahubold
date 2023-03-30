@@ -670,6 +670,14 @@ core_models = {
                 {"name": "description", "kind": "String", "optional": True},
             ],
         },
+        {
+            "name": "profile",
+            "kind": "Profile",
+            "attributes": [
+                {"name": "profile_name", "label": "Name", "kind": "String", "unique": True},
+                {"name": "profile_description", "label": "Description", "kind": "String", "optional": True},
+            ],
+        },
     ],
     "nodes": [
         {

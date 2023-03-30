@@ -295,3 +295,63 @@ nodes:
         optional: true
         cardinality: one
         kind: Attribute
+      - name: profile
+        peer: BGPSessionProfile
+        optional: true
+        identifier: bgpsession__profile
+        cardinality: one
+        kind: Generic
+  - name: bgp_session_profile
+    kind: BGPSessionProfile
+    branch: true
+    attributes:
+      - name: profile_name
+        kind: String
+        optional: false
+      - name: profile_description
+        kind: String
+        optional: true
+      - name: profile_priority
+        kind: Integer
+        default_value: 500
+      - name: type
+        kind: String
+        enum:
+          - EXTERNAL
+          - INTERNAL
+      - name: import_policies
+        kind: String
+        optional: true
+      - name: export_policies
+        kind: String
+        optional: true
+    relationships:
+      - name: objects
+        peer: BGPSession
+        optional: true
+        cardinality: many
+        kind: Generic
+        identifier: bgpsession__profile
+      - name: status
+        peer: Status
+        optional: true
+        cardinality: one
+        kind: Attribute
+      - name: role
+        peer: Role
+        optional: true
+        cardinality: one
+        kind: Attribute
+      - name: local_as
+        identifier: bgpsessionprofile__local_as
+        peer: AutonomousSystem
+        optional: true
+        cardinality: one
+        kind: Attribute
+      - name: remote_as
+        identifier: bgpsessionprofile__remote_as
+        peer: AutonomousSystem
+        optional: true
+        cardinality: one
+        kind: Attribute
+

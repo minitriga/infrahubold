@@ -91,7 +91,7 @@ class AttributeCreateQuery(AttributeQuery):
         CREATE (a)-[:IS_VISIBLE { branch: $branch, status: "active", from: $at, to: null }]->(iv)
         """ % (
             self.attr._rel_to_node_label,
-            self.attr._rel_to_value_label,
+            self.attr.get_value_label(),
         )
         self.add_to_query(query)
 
@@ -168,9 +168,10 @@ class AttributeGetValueQuery(AttributeQuery):
 
         query = """
         MATCH (a { uuid: $attr_uuid })
-        MATCH (a)-[r:HAS_VALUE]-(av)
+        MATCH (a)-[r:%s]-(av)
         WHERE %s
         """ % (
+            "|".join(self.attr.get_value_labels()),
             "\n AND ".join(rels_filter),
         )
 

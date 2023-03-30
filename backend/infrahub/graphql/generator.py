@@ -196,12 +196,14 @@ async def generate_object_types(
         if not isinstance(node_schema, NodeSchema):
             continue
         node_type = generate_graphql_object(schema=node_schema, branch=branch)
+        # profile_type = generate_profile_object(schema=node_schema, branch=branch)
         related_node_type = generate_related_graphql_object(schema=node_schema, branch=branch)
 
         related_node_type._meta.fields["_relation__source"] = graphene.Field(data_source)
         related_node_type._meta.fields["_relation__owner"] = graphene.Field(data_owner)
 
         registry.set_graphql_type(name=node_type._meta.name, graphql_type=node_type, branch=branch.name)
+        #registry.set_graphql_type(name=profile_type._meta.name, graphql_type=profile_type, branch=branch.name)
         registry.set_graphql_type(name=related_node_type._meta.name, graphql_type=related_node_type, branch=branch.name)
 
         # Register this model to all the groups it belongs to.
@@ -225,6 +227,7 @@ async def generate_object_types(
         if not isinstance(node_schema, NodeSchema):
             continue
         node_type = registry.get_graphql_type(name=node_name, branch=branch.name)
+        # profile_type = registry.get_graphql_type(name=f"{node_name}Profile", branch=branch.name)
         related_node_type = registry.get_graphql_type(name=f"Related{node_name}", branch=branch.name)
 
         for rel in node_schema.relationships:
@@ -239,6 +242,8 @@ async def generate_object_types(
             if rel.cardinality == "one":
                 node_type._meta.fields[rel.name] = graphene.Field(peer_type, resolver=default_resolver)
                 related_node_type._meta.fields[rel.name] = graphene.Field(peer_type, resolver=default_resolver)
+                # if rel.kind == "Attribute":
+                #     profile_type._meta.fields[rel.name] = graphene.Field(peer_type, resolver=default_resolver)
 
             elif rel.cardinality == "many":
                 node_type._meta.fields[rel.name] = graphene.Field.mounted(
@@ -247,6 +252,10 @@ async def generate_object_types(
                 related_node_type._meta.fields[rel.name] = graphene.Field.mounted(
                     graphene.List(of_type=peer_type, required=True, **peer_filters)
                 )
+                # if rel.kind == "Attribute":
+                #     profile_type._meta.fields[rel.name] = graphene.Field.mounted(
+                #         graphene.List(of_type=peer_type, required=True, **peer_filters)
+                #     )
 
 
 async def generate_query_mixin(session: AsyncSession, branch: Union[Branch, str] = None) -> Type[object]:
@@ -325,6 +334,38 @@ def generate_graphql_object(schema: NodeSchema, branch: Branch) -> Type[Infrahub
         main_attrs[attr.name] = graphene.Field(attr_type, required=not attr.optional, description=attr.description)
 
     return type(schema.kind, (InfrahubObject,), main_attrs)
+
+# def generate_profile_object(schema: NodeSchema, branch: Branch) -> Type[InfrahubObject]:
+#     """Generate a GraphQL Profile object Type from a Infrahub NodeSchema."""
+
+#     meta_attrs = {
+#         "schema": schema,
+#         "name": f"{schema.kind}Profile",
+#         "description": schema.description,
+#         "default_resolver": default_resolver,
+#         "interfaces": set(),
+#     }
+
+#     if schema.inherit_from:
+#         for generic in schema.inherit_from:
+#             generic = registry.get_graphql_type(name=generic, branch=branch.name)
+#             meta_attrs["interfaces"].add(generic)
+
+#     profile = registry.get_graphql_type(name="Profile", branch=branch.name)
+#     meta_attrs["interfaces"].add(profile)
+
+#     main_attrs = {
+#         "id": graphene.String(required=True),
+#         "_updated_at": graphene.DateTime(required=False),
+#         "display_label": graphene.String(required=False),
+#         "Meta": type("Meta", (object,), meta_attrs),
+#     }
+
+#     for attr in schema.local_attributes:
+#         attr_type = registry.get_graphql_type(name=TYPES_MAPPING_INFRAHUB_GRAPHQL_STR[attr.kind], branch=branch.name)
+#         main_attrs[attr.name] = graphene.Field(attr_type, required=not attr.optional, description=attr.description)
+
+#     return type(schema.kind, (InfrahubObject,), main_attrs)
 
 
 def generate_union_object(

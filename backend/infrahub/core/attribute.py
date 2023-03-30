@@ -35,6 +35,8 @@ class BaseAttribute(FlagPropertyMixin, NodePropertyMixin):
 
     _rel_to_node_label: str = "HAS_ATTRIBUTE"
     _rel_to_value_label: str = "HAS_VALUE"
+    _rel_to_value_default_label: str = "HAS_DEFAULT_VALUE"
+    _rel_to_value_inherited_label: str = "HAS_INHERITED_VALUE"
 
     def __init__(
         self,
@@ -58,6 +60,8 @@ class BaseAttribute(FlagPropertyMixin, NodePropertyMixin):
         self.schema = schema
         self.branch = branch
         self.at = at
+        self.is_inherited = False
+        self.is_default = False
 
         self._init_node_property_mixin(kwargs)
         self._init_flag_property_mixin(kwargs)
@@ -67,7 +71,7 @@ class BaseAttribute(FlagPropertyMixin, NodePropertyMixin):
         if data is not None and isinstance(data, dict):
             self.from_db(data.get("value", None))
 
-            fields_to_extract_from_data = ["id", "db_id"] + self._flag_properties + self._node_properties
+            fields_to_extract_from_data = ["id", "db_id", "is_inherited"] + self._flag_properties + self._node_properties
             for field_name in fields_to_extract_from_data:
                 setattr(self, field_name, data.get(field_name, None))
 
@@ -80,6 +84,7 @@ class BaseAttribute(FlagPropertyMixin, NodePropertyMixin):
         # Assign default values
         if self.value is None and self.schema.default_value is not None:
             self.value = self.schema.default_value
+            self.is_default = True
 
         if self.value is not None:
             self.validate(value=self.value, name=self.name, schema=self.schema)
@@ -90,8 +95,23 @@ class BaseAttribute(FlagPropertyMixin, NodePropertyMixin):
         if self.is_visible is None:
             self.is_visible = True
 
+        if self.is_inherited is None:
+            self.is_inherited = False
+
     def get_kind(self) -> str:
         return self.schema.kind
+
+    def get_value_label(self) -> str:
+        """Return the applicable value label for this attribute based on its properties."""
+        if self.is_default:
+            return self._rel_to_value_default_label
+        if self.is_inherited:
+            return self._rel_to_value_inherited_label
+        return self._rel_to_value_label
+
+    def get_value_labels(self) -> str:
+        """Return a list of all possible value labels."""
+        return [self._rel_to_value_label + self._rel_to_value_inherited_label + self._rel_to_value_default_label ]
 
     @classmethod
     def validate(cls, value: Any, name: str, schema: AttributeSchema) -> bool:

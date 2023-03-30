@@ -13,7 +13,7 @@ from infrahub.core.schema import (
 )
 from infrahub.exceptions import ValidationError
 from infrahub_client.timestamp import Timestamp
-
+from infrahub.utils import intersection
 from ..attribute import BaseAttribute
 from ..relationship import RelationshipManager
 from ..utils import update_relationships_to
@@ -110,7 +110,7 @@ class Node(BaseNode, metaclass=BaseNodeMeta):
 
         return cls(**attrs)
 
-    async def _process_fields(self, fields: dict, session: AsyncSession):
+    async def _process_fields(self, fields: dict, profile: Optional[Node], session: AsyncSession):
         errors = []
 
         if "_source" in fields.keys():
@@ -125,7 +125,25 @@ class Node(BaseNode, metaclass=BaseNodeMeta):
             if field_name not in self._schema.valid_input_names:
                 errors.append(ValidationError({field_name: f"{field_name} is not a valid input for {self.get_kind()}"}))
 
+
+        # -------------------------------------------
+        # Extend attributes with value from Profile
+        # -------------------------------------------
+        if profile:
+            shared_attribute_names = intersection(profile._schema.attribute_names, self._schema.attribute_names)
+            # For now we assume that nothing has been provided for the attribute but later we'll need to consider the metadata as well
+            for attr_name in shared_attribute_names:
+                if attr_name in fields:
+                    continue
+
+                fields[attr_name] = {
+                    "is_inherited": True,
+                    "value": getattr(profile, attr_name).value,
+                    "source": profile.id,
+                }
+
         # If the object is new, we need to ensure that all mandatory attributes and relationships have been provided
+        # NOTE we'll need to account for profile(s) at this point
         if not self.id:
             for mandatory_attr in self._schema.mandatory_attribute_names:
                 if mandatory_attr not in fields.keys():

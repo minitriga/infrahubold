@@ -432,6 +432,21 @@ async def run(client: InfrahubClient, log: logging.Logger):
             log.info(f"Connected  '{site_name}-edge1::{intf1.name.value}' <> '{site_name}-edge2::{intf2.name.value}'")
 
     # --------------------------------------------------
+    # CREATE BGPProfile
+    # --------------------------------------------------
+
+    bgp_profile_internal = await client.create(
+                kind="BGPSessionProfile",
+                type="INTERNAL",
+                profile_name="edge-to-edge",
+                local_as=internal_as.id,
+                remote_as=internal_as.id,
+                import_policies="IMPORT_ALL",
+                export_policies="EXPORT_ALL"
+    )
+    await bgp_profile_internal.save()
+
+    # --------------------------------------------------
     # CREATE iBGP SESSION
     # --------------------------------------------------
 
@@ -455,6 +470,7 @@ async def run(client: InfrahubClient, log: logging.Logger):
                 device=device_dict[device1].id,
                 status=active_status.id,
                 role=roles_dict["backbone"].id,
+                profile=bgp_profile_internal.id
             )
             await obj.save()
 
