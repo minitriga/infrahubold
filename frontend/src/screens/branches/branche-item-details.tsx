@@ -54,7 +54,6 @@ export const BrancheItemDetails = () => {
 
       try {
         const branchDetails = await getBranchDetails(branchid);
-        console.log("branchDetails: ", branchDetails);
 
         setBranch(branchDetails);
         setIsLoadingBranch(false);
@@ -71,10 +70,6 @@ export const BrancheItemDetails = () => {
     },
     [fetchBranchDetails]
   );
-
-  console.log("branch: ", branch);
-  console.log("isLoadingBranch: ", isLoadingBranch);
-
 
   return (
     <div className="">
