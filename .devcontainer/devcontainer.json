@@ -1,0 +1,34 @@
+{
+    "name": "infrahub",
+    // The dockerfile will be at te root of the project
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": "."
+    },
+    // "features": {
+    //     "ghcr.io/devcontainers/features/common-utils:2":{
+    //         "installZsh": "true",
+    //         // "username": "vscode",
+    //         // "userUid": "1000",
+    //         // "userGid": "1000",
+    //         "upgradePackages": "true"
+    //     },
+    //     "ghcr.io/devcontainers/features/python:1": "none",
+    //     "ghcr.io/devcontainers/features/git:1": {
+    //         "version": "latest",
+    //         "ppa": "false"
+    //     }
+    // },
+    // Your code path from the .devcontainer directory
+    // "workspaceFolder": "../app",
+    // List of ports that you want to preview
+    "forwardPorts": [3000, 8000],
+    // Script to run to bootstrap the app when the space is created
+    // "postCreateCommand": ". ../development/setup_script.sh",
+    // Automatically start the app in subsequent sessions
+    // "postStartCommand": "cd app && docker-compose start",
+    // Privileged flag is needed to run docker-in-docker, the volume
+    // is needed or docker build will fail
+    "runArgs": ["--volume=/var/lib/docker", "--privileged"]
+    // "postCreateCommand": ". /app/scripts/codespaces.sh",
+}
