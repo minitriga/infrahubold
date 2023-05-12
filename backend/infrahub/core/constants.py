@@ -23,3 +23,16 @@ class RelationshipStatus(enum.Flag):
     ACTIVE = "active"
 
     DELETED = "deleted"
+
+
+# List if Node Labels that are reserved for internal use
+INTERNAL_NODE_LABELS = [
+    "Attribute",
+    "AttributeLocal",
+    "AttributeValue",
+    "Boolean",
+    "Branch",
+    "Node",
+    "Relationship",
+    "Root",
+]
