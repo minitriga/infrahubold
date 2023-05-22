@@ -453,7 +453,7 @@ class NodeGetListQuery(Query):
         super().__init__(*args, **kwargs)
 
     async def query_init(self, session: AsyncSession, *args, **kwargs):
-        filter_has_id = False
+        filter_has_single_id = False
         self.order_by = []
 
         final_return_labels = ["n.uuid", "rb.branch", "rb.element_id"]
@@ -464,12 +464,16 @@ class NodeGetListQuery(Query):
         where_clause = ["$node_kind IN LABELS(n)"]
         self.params["node_kind"] = self.schema.kind
 
-        # Check 'id' is part of the filter
+        # Check 'id' or 'ids' is part of the filter
         # if 'id' is present, we can skip ordering, filtering etc ..
+        # if 'ids' is present, we keep the the filtering and the ordering
         if self.filters and "id" in self.filters:
-            filter_has_id = True
+            filter_has_single_id = True
             where_clause.append("n.uuid = $uuid")
             self.params["uuid"] = self.filters["id"]
+        elif self.filters and "ids" in self.filters:
+            where_clause.append(f"n.uuid IN $node_ids")
+            self.params[f"node_ids"] = self.filters["ids"]
 
         # Add the Branch filters
         branch_filter, branch_params = self.branch.get_query_filter_path(at=self.at.to_string())
@@ -479,7 +483,7 @@ class NodeGetListQuery(Query):
         self.add_to_query("WHERE " + " AND ".join(where_clause))
         self.return_labels = ["n", "rb"]
 
-        if filter_has_id:
+        if filter_has_single_id:
             self.return_labels = final_return_labels
             return
 
