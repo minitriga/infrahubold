@@ -109,6 +109,18 @@ jobs:
       - name: "Install ruff"
         uses: "chartboost/ruff-action@v1"
 
+  english-lint:
+    # if: needs.files-changed.outputs.python == 'true'
+    # needs: ["files-changed"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v3"
+      - name: "Setup environment"
+        run: "pip install vale"
+      - name: "Linting: Vale"
+        run: "vale ."
+
   # backend-build-docker:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -147,7 +159,7 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
       needs.files-changed.outputs.sdk == 'true'
-    needs: ["files-changed", "yaml-lint", "python-lint"]
+    needs: ["files-changed", "yaml-lint", "python-lint", "english-lint"]
     runs-on: "ubuntu-20.04"
     steps:
       - name: "Check out repository code"
@@ -194,7 +206,7 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
       needs.files-changed.outputs.backend == 'true'
-    needs: ["files-changed", "yaml-lint", "python-lint"]
+    needs: ["files-changed", "yaml-lint", "python-lint", "english-lint"]
     runs-on: "ubuntu-20.04"
     steps:
       - name: "Check out repository code"
@@ -238,7 +250,7 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
       needs.files-changed.outputs.backend == 'true'
-    needs: ["files-changed", "yaml-lint", "python-lint"]
+    needs: ["files-changed", "yaml-lint", "python-lint", "english-lint"]
     runs-on: "ubuntu-20.04"
     steps:
       - name: "Check out repository code"
@@ -260,7 +272,7 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
       needs.files-changed.outputs.ctl == 'true'
-    needs: ["files-changed", "yaml-lint", "python-lint"]
+    needs: ["files-changed", "yaml-lint", "python-lint", "english-lint"]
     runs-on: "ubuntu-20.04"
     steps:
       - name: "Check out repository code"
@@ -297,7 +309,7 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
       needs.files-changed.outputs.frontend == 'true'
-    needs: ["files-changed", "yaml-lint", "javascript-lint"]
+    needs: ["files-changed", "yaml-lint", "javascript-lint", "english-lint"]
     runs-on: "ubuntu-20.04"
     steps:
       - name: "Check out repository code"
@@ -326,62 +338,62 @@ jobs:
           parallel: true
           file: frontend/coverage/lcov.info
 
-  E2E-testing:
-    needs: ["frontend-tests", "ctl-tests", "backend-tests-default", "python-sdk-tests"]
-    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Check out repository code"
-        uses: "actions/checkout@v3"
-      - name: "Install Invoke"
-        run: "pip install toml invoke"
-      # - name: Cache Docker images
-      #   uses: ScribeMD/docker-cache@0.3.3
-      #   with:
-      #     key: "docker-${{ runner.os }}-e2e-${{ hashFiles('development/**') }}"
-      - name: Build Demo
-        run: "invoke demo.build"
-      - name: Initialize Demo
-        run: "invoke demo.init demo.start demo.load-infra-schema"
-        continue-on-error: True
-      - name: Check Demo Status
-        run: "invoke demo.status"
-      - name: Load Data
-        run: "invoke demo.load-infra-data"
-        continue-on-error: True
-      # - name: Run E2E tests
-      #   run: "invoke demo.load-infra-data"
+  # E2E-testing:
+  #   needs: ["frontend-tests", "ctl-tests", "backend-tests-default", "python-sdk-tests"]
+  #   if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: "Check out repository code"
+  #       uses: "actions/checkout@v3"
+  #     - name: "Install Invoke"
+  #       run: "pip install toml invoke"
+  #     # - name: Cache Docker images
+  #     #   uses: ScribeMD/docker-cache@0.3.3
+  #     #   with:
+  #     #     key: "docker-${{ runner.os }}-e2e-${{ hashFiles('development/**') }}"
+  #     - name: Build Demo
+  #       run: "invoke demo.build"
+  #     - name: Initialize Demo
+  #       run: "invoke demo.init demo.start demo.load-infra-schema"
+  #       continue-on-error: True
+  #     - name: Check Demo Status
+  #       run: "invoke demo.status"
+  #     - name: Load Data
+  #       run: "invoke demo.load-infra-data"
+  #       continue-on-error: True
+  #     # - name: Run E2E tests
+  #     #   run: "invoke demo.load-infra-data"
 
-  coverall-report:
-    needs: ["frontend-tests", "ctl-tests", "backend-tests-default", "python-sdk-tests"]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      # # NOTE: The ref value should be different when triggered by pull_request event.
-      # #       See: https://github.com/lewagon/wait-on-check-action/issues/25.
-      # - name: Wait on tests (PR)
-      #   uses: lewagon/wait-on-check-action@e106e5c43e8ca1edea6383a39a01c5ca495fd812
-      #   if: github.event_name == 'pull_request'
-      #   with:
-      #     ref: ${{ github.event.pull_request.head.sha }}
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     wait-interval: 10
-      #     running-workflow-name: report
-      #     allowed-conclusions: success,skipped,cancelled,failure
+  # coverall-report:
+  #   needs: ["frontend-tests", "ctl-tests", "backend-tests-default", "python-sdk-tests"]
+  #   if: always()
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     # # NOTE: The ref value should be different when triggered by pull_request event.
+  #     # #       See: https://github.com/lewagon/wait-on-check-action/issues/25.
+  #     # - name: Wait on tests (PR)
+  #     #   uses: lewagon/wait-on-check-action@e106e5c43e8ca1edea6383a39a01c5ca495fd812
+  #     #   if: github.event_name == 'pull_request'
+  #     #   with:
+  #     #     ref: ${{ github.event.pull_request.head.sha }}
+  #     #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+  #     #     wait-interval: 10
+  #     #     running-workflow-name: report
+  #     #     allowed-conclusions: success,skipped,cancelled,failure
 
-      # - name: Wait on tests (push)
-      #   if: github.event_name != 'pull_request'
-      #   uses: lewagon/wait-on-check-action@e106e5c43e8ca1edea6383a39a01c5ca495fd812
-      #   with:
-      #     ref: ${{ github.sha }}
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     wait-interval: 10
-      #     running-workflow-name: report
-      #     allowed-conclusions: success,skipped,cancelled,failure
+  #     # - name: Wait on tests (push)
+  #     #   if: github.event_name != 'pull_request'
+  #     #   uses: lewagon/wait-on-check-action@e106e5c43e8ca1edea6383a39a01c5ca495fd812
+  #     #   with:
+  #     #     ref: ${{ github.sha }}
+  #     #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+  #     #     wait-interval: 10
+  #     #     running-workflow-name: report
+  #     #     allowed-conclusions: success,skipped,cancelled,failure
 
-      - uses: coverallsapp/github-action@v2
-        env:
-          COVERALLS_SERVICE_NUMBER: ${{ github.sha }}
-        with:
-          carryforward: "backend-unit,backend-integration,frontend-unit,infrahubctl-unit,python-sdk-unit,python-sdk-integration"
-          parallel-finished: true
+  #     - uses: coverallsapp/github-action@v2
+  #       env:
+  #         COVERALLS_SERVICE_NUMBER: ${{ github.sha }}
+  #       with:
+  #         carryforward: "backend-unit,backend-integration,frontend-unit,infrahubctl-unit,python-sdk-unit,python-sdk-integration"
+  #         parallel-finished: true

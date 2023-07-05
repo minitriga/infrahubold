@@ -3974,6 +3974,18 @@ docs = ["Sphinx (>=4.1.2,<4.2.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "sphinxc
 test = ["Cython (>=0.29.32,<0.30.0)", "aiohttp", "flake8 (>=3.9.2,<3.10.0)", "mypy (>=0.800)", "psutil", "pyOpenSSL (>=22.0.0,<22.1.0)", "pycodestyle (>=2.7.0,<2.8.0)"]
 
 [[package]]
+name = "vale"
+version = "2.26.0.0"
+description = "Install and use Vale (grammar & style check tool) in python environments."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "vale-2.26.0.0-py3-none-any.whl", hash = "sha256:3602ef4baeb418dd17d8a1c9e49003b13bd48d574ba3a57290b1f0d83c8ddbc0"},
+    {file = "vale-2.26.0.0.tar.gz", hash = "sha256:7465042627e897fec658b97979c142de3587084c9b8cae77edbbb194985e2cd1"},
+]
+
+[[package]]
 name = "virtualenv"
 version = "20.23.1"
 description = "Virtual Python Environment builder"
@@ -4457,4 +4469,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8, < 3.12"
-content-hash = "b0d67d16e8a50cd8921fabe7d8371e910a2864651b84fae6e4f9902634755276"
+content-hash = "e6d269244b6a48c3fab33395c5f08584aa6d0cfbf73c9501630cfaabef6ab0b2"
