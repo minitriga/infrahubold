@@ -187,7 +187,7 @@ def test_unit(context: Context):
     with context.cd(REPO_BASE):
         compose_files_cmd = build_test_compose_files_cmd()
         base_cmd = f"{get_env_vars(context)} docker compose {compose_files_cmd} -p {BUILD_NAME} run infrahub-test"
-        exec_cmd = f"pytest -n {NBR_WORKERS} -v --cov=infrahub {MAIN_DIRECTORY}/tests/unit"
+        exec_cmd = f"pytest -n {NBR_WORKERS} --dist loadscope -v --cov=infrahub {MAIN_DIRECTORY}/tests/unit"
         print(exec_cmd)
         return execute_command(context=context, command=f"{base_cmd} {exec_cmd}")
 
@@ -197,7 +197,7 @@ def test_core(context: Context, database: str = "memgraph"):
     with context.cd(REPO_BASE):
         compose_files_cmd = build_test_compose_files_cmd(database=database)
         base_cmd = f"{get_env_vars(context)} docker compose {compose_files_cmd} -p {BUILD_NAME} run infrahub-test"
-        exec_cmd = f"pytest -n {NBR_WORKERS} -v {MAIN_DIRECTORY}/tests/unit/core"
+        exec_cmd = f"pytest -n {NBR_WORKERS} --dist loadscope -v {MAIN_DIRECTORY}/tests/unit/core"
         if database == "neo4j":
             exec_cmd += " --neo4j"
         print(exec_cmd)
@@ -209,7 +209,7 @@ def test_integration(context: Context, database: str = "memgraph"):
     with context.cd(REPO_BASE):
         compose_files_cmd = build_test_compose_files_cmd(database=database)
         base_cmd = f"{get_env_vars(context)} docker compose {compose_files_cmd} -p {BUILD_NAME} run"
-        exec_cmd = f"infrahub-test pytest -n {NBR_WORKERS} -v --cov=infrahub {MAIN_DIRECTORY}/tests/integration"
+        exec_cmd = f"infrahub-test pytest -n {NBR_WORKERS} --dist loadscope -v --cov=infrahub {MAIN_DIRECTORY}/tests/integration"
         if database == "neo4j":
             exec_cmd += " --neo4j"
         return execute_command(context=context, command=f"{base_cmd} {exec_cmd}")
