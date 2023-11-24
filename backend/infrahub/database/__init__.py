@@ -14,7 +14,7 @@ from neo4j import (
 )
 
 # from contextlib import asynccontextmanager
-from neo4j.exceptions import ClientError, ServiceUnavailable
+from neo4j.exceptions import ClientError, DriverError, Neo4jError, ServiceUnavailable, TransactionError
 
 from infrahub import config
 from infrahub.exceptions import DatabaseError
@@ -185,17 +185,50 @@ class InfrahubDatabase:
     ) -> List[Record]:
         with QUERY_EXECUTION_METRICS.labels(str(self._session_mode), name).time():
             if self.is_transaction:
-                execution_method = await self.transaction()
-            else:
-                execution_method = await self.session()
+                return await self.execute_query_transaction(query=query, params=params)
 
+            return await self.execute_query_session(query=query, params=params)
+
+    async def execute_query_transaction(
+        self, query: str, params: Optional[Dict[str, Any]] = None
+    ) -> List[Record]:
+        transaction = await self.transaction()
+        session = await self.session()
+        # await self.session()
+
+        retry_delay = 1
+        retry_count = 0
+        max_retry = 3
+        while True:
             try:
-                response = await execution_method.run(query=query, parameters=params)
+                response = await transaction.run(query=query, parameters=params)
+                return [item async for item in response]
             except ServiceUnavailable as exc:
                 log.error("Database Service unavailable", error=str(exc))
                 raise DatabaseError(message="Unable to connect to the database") from exc
+            except (DriverError, Neo4jError) as exc:
+                await session._disconnect()
+                if not exc.is_retryable() or retry_count == max_retry:
+                    log.error(f"Database Error {exc.is_retryable()} - {retry_count}/{max_retry} ", error=str(exc))
+                    raise
 
-            return [item async for item in response]
+                retry_count += 1
+                log.warning(f"Transaction will be retry in {retry_delay} {retry_count}/{max_retry}", error=str(exc))
+
+            await asyncio.sleep(retry_delay)
+
+    async def execute_query_session(
+        self, query: str, params: Optional[Dict[str, Any]] = None
+    ) -> List[Record]:
+        session = await self.session()
+        try:
+            response = await session.run(query=query, parameters=params)
+
+        except ServiceUnavailable as exc:
+            log.error("Database Service unavailable", error=str(exc))
+            raise DatabaseError(message="Unable to connect to the database") from exc
+
+        return [item async for item in response]
 
 
 async def create_database(driver: AsyncDriver, database_name: str) -> None:

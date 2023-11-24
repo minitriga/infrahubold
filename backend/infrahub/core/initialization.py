@@ -21,7 +21,7 @@ async def initialization(db: InfrahubDatabase):
         session = await db.session()
         await session.run(query="SET DATABASE SETTING 'log.level' TO 'INFO'")
         await session.run(query="SET DATABASE SETTING 'log.to_stderr' TO 'true'")
-        await session.run(query="STORAGE MODE IN_MEMORY_ANALYTICAL")
+        await session.run(query="STORAGE MODE IN_MEMORY_TRANSACTIONAL")
 
     # ---------------------------------------------------
     # Initialize the database and Load the Root node
