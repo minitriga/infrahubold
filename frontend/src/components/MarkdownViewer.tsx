@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import "../styles/markdown.css";
 
 type MarkdownViewerProps = {
-  value: string;
+  value?: string;
 };
 
 export const MarkdownViewer: FC<MarkdownViewerProps> = ({ value }) => {
