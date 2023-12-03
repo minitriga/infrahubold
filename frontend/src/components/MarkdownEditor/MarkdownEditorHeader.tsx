@@ -1,6 +1,12 @@
 import React, { FC } from "react";
 import { Button } from "../button";
-import { boldCommand, italicCommand, strikethroughCommand } from "./command";
+import {
+  boldCommand,
+  italicCommand,
+  orderedListCommand,
+  strikethroughCommand,
+  unorderedListCommand,
+} from "./command";
 import { Icon } from "@iconify-icon/react";
 import { CodeMirrorRef } from "./CodeMirror";
 
@@ -9,7 +15,13 @@ type ToolbarProps = { codeMirror: CodeMirrorRef };
 const ToolBar: FC<ToolbarProps> = ({ codeMirror }) => {
   return (
     <div className="flex items-center gap-2 pr-2">
-      {[boldCommand, italicCommand, strikethroughCommand].map(({ label, icon, onClick }, key) => {
+      {[
+        boldCommand,
+        italicCommand,
+        strikethroughCommand,
+        unorderedListCommand,
+        orderedListCommand,
+      ].map(({ label, icon, onClick }, key) => {
         let buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> = {
           type: "button",
           "aria-label": label,

@@ -72,3 +72,51 @@ export const strikethroughCommand: EditorCommand = {
   icon: "mdi:format-strikethrough-variant",
   onClick: applyFormatting("~~"), // Strikethrough token using ~~
 };
+
+const applyListFormatting =
+  (isOrdered: boolean): EditorCommand["onClick"] =>
+  ({ view }) => {
+    if (!view) return;
+
+    const { state, dispatch } = view;
+    const { from, to } = state.selection.main;
+
+    const lineStart = state.doc.lineAt(from).from;
+    const lineEnd = state.doc.lineAt(to).to;
+
+    const selectedText = state.sliceDoc(lineStart, lineEnd);
+    const lines = selectedText.split("\n").filter((line) => line.trim() !== ""); // Filter out empty lines
+
+    const hasListFormatting = lines.every((line) =>
+      isOrdered ? /^\d+\. /.test(line.trim()) : /^- /.test(line.trim())
+    );
+
+    const indentedLines = lines.map((line, index) =>
+      hasListFormatting
+        ? line.replace(isOrdered ? /^\d+\. / : /^- /, "")
+        : isOrdered
+        ? `${index + 1}. ${line}`
+        : `- ${line}`
+    );
+
+    const formattedText = indentedLines.join("\n");
+
+    dispatch(
+      state.changeByRange(() => ({
+        changes: [{ from: lineStart, to: lineEnd, insert: formattedText }],
+        range: EditorSelection.range(lineStart, lineStart + formattedText.length),
+      }))
+    );
+  };
+
+export const unorderedListCommand: EditorCommand = {
+  label: "Unordered list",
+  icon: "mdi:format-list-bulleted",
+  onClick: applyListFormatting(false),
+};
+
+export const orderedListCommand: EditorCommand = {
+  label: "Ordered list",
+  icon: "mdi:format-list-numbered",
+  onClick: applyListFormatting(true),
+};
