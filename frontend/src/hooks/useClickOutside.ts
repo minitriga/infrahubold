@@ -5,9 +5,11 @@ export const useClickOutside = (
   onClickOutside: Function
 ): void => {
   useEffect(() => {
+    if (!ref.current) return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (!ref.current?.contains(event.target as Node)) {
-        onClickOutside && onClickOutside();
+        onClickOutside();
       }
     };
     document.addEventListener("click", handleClickOutside, true);

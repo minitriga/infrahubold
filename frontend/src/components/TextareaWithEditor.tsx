@@ -28,6 +28,7 @@ export function TextareaWithEditor({
             setText(e);
           }}
           value={text}
+          className="min-h-16"
         />
       ) : (
         <textarea
@@ -41,7 +42,7 @@ export function TextareaWithEditor({
                 border-gray-300 bg-custom-white
                 sm:text-sm sm:leading-6
                 focus:ring-2 focus:ring-inset focus:ring-custom-blue-600 focus:border-custom-blue-600 focus:outline-none
-                disabled:cursor-not-allowed disabled:bg-gray-100
+                disabled:cursor-not-allowed disabled:bg-gray-100 min-h-16
             `,
             className ?? "",
             error?.message ? "ring-red-500 focus:ring-red-600" : ""

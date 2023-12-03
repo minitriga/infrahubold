@@ -5,6 +5,7 @@ import { EditorState } from "@codemirror/state";
 import { indentWithTab } from "@codemirror/commands";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { MarkdownViewer } from "../MarkdownViewer";
+import { classNames } from "../../utils/common";
 
 const EditorHeader = ({ preview, onPreviewToggle }) => (
   <div className="border-b">
@@ -49,15 +50,16 @@ const CodeMirror = ({ value = "", placeholder = "Write your text here...", onCha
 };
 
 type MarkdownEditorProps = {
+  className?: string;
   onChange: Function;
   value?: string;
 };
 export const MarkdownEditor = forwardRef<HTMLDivElement, MarkdownEditorProps>(
-  ({ onChange, value }, ref) => {
+  ({ className = "", onChange, value }, ref) => {
     const [preview, setPreview] = useState<boolean>(false);
 
     return (
-      <div ref={ref} className="relative rounded-md border border-gray-300 shadow">
+      <div ref={ref} className={classNames("rounded-md border border-gray-300 shadow", className)}>
         <EditorHeader preview={preview} onPreviewToggle={() => setPreview(!preview)} />
 
         {preview ? (

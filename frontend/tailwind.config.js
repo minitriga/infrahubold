@@ -4,6 +4,9 @@
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    minHeight: {
+      16: "64px",
+    },
     extend: {
       colors: {
         "custom-blue": {
