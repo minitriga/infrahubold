@@ -1,8 +1,7 @@
 import { classNames } from "../../utils/common";
 import { AVATAR_SIZE, Avatar } from "../avatar";
 import { DateDisplay } from "../date-display";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { MarkdownViewer } from "../MarkdownViewer";
 import React from "react";
 
 type CommentProps = {
@@ -27,9 +26,7 @@ export const Comment: React.FC<CommentProps> = ({ author, createdAt, content, cl
         </div>
       </div>
 
-      <Markdown remarkPlugins={[remarkGfm]} className="markdown">
-        {content}
-      </Markdown>
+      <MarkdownViewer value={content} />
     </div>
   );
 };
