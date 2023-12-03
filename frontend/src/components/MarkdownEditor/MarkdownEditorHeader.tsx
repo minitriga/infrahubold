@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { Button } from "../button";
-import { boldCommand } from "./command";
+import { boldCommand, italicCommand, strikethroughCommand } from "./command";
 import { Icon } from "@iconify-icon/react";
 import { CodeMirrorRef } from "./CodeMirror";
 
@@ -9,11 +9,12 @@ type ToolbarProps = { codeMirror: CodeMirrorRef };
 const ToolBar: FC<ToolbarProps> = ({ codeMirror }) => {
   return (
     <div className="flex items-center gap-2 pr-2">
-      {[boldCommand].map(({ label, icon, onClick }, key) => {
+      {[boldCommand, italicCommand, strikethroughCommand].map(({ label, icon, onClick }, key) => {
         let buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> = {
           type: "button",
           "aria-label": label,
-          onClick: () => {
+          onMouseDown: (event) => {
+            event.preventDefault();
             if (codeMirror) onClick(codeMirror);
           },
         };
@@ -46,9 +47,6 @@ export const EditorHeader: FC<EditorHeaderProps> = ({ codeMirror, preview, onPre
     {/*  <Button onClick={onPreviewToggle} className="bg-white border-none p-0 text-xl shadow-none">*/}
     {/*    <Icon icon="mdi:format-bold" />*/}
     {/*  </Button>*/}
-    {/*  <Icon icon="mdi:format-italic" />*/}
-    {/*  <Icon icon="mdi:format-underline" />*/}
-    {/*  <Icon icon="mdi:format-strikethrough-variant" />*/}
 
     {/*  <Icon icon="mdi:format-list-bulleted" />*/}
     {/*  <Icon icon="mdi:format-list-numbered" />*/}
