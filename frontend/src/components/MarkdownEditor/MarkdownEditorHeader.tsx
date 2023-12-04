@@ -23,6 +23,7 @@ const ToolBar: FC<ToolbarProps> = ({ codeMirror }) => {
         orderedListCommand,
       ].map(({ label, icon, onClick }, key) => {
         let buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> = {
+          className: "bg-white border-none p-0 text-xl shadow-none",
           type: "button",
           "aria-label": label,
           onMouseDown: (event) => {
@@ -54,18 +55,5 @@ export const EditorHeader: FC<EditorHeaderProps> = ({ codeMirror, preview, onPre
     </Button>
 
     {!preview && <ToolBar codeMirror={codeMirror} />}
-
-    {/*<div className="flex items-center gap-2 pr-2">*/}
-    {/*  <Button onClick={onPreviewToggle} className="bg-white border-none p-0 text-xl shadow-none">*/}
-    {/*    <Icon icon="mdi:format-bold" />*/}
-    {/*  </Button>*/}
-
-    {/*  <Icon icon="mdi:format-list-bulleted" />*/}
-    {/*  <Icon icon="mdi:format-list-numbered" />*/}
-    {/*  <Icon icon="mdi:format-list-checkbox" />*/}
-
-    {/*  <Icon icon="mdi:format-quote-close" />*/}
-    {/*  <Icon icon="mdi:xml" />*/}
-    {/*</div>*/}
   </div>
 );

@@ -150,7 +150,6 @@ export const Conversations = (props: tConversations) => {
   const state = proposedChangesDetails?.state?.value;
 
   const handleSubmit = async ({ comment }: { comment: string }) => {
-    return console.log(comment);
     let threadId;
 
     try {
