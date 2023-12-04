@@ -34,7 +34,7 @@ export const AddComment = ({
     <Form
       onSubmit={onSubmit}
       fields={fields}
-      submitLabel={"Comment"}
+      submitLabel="Comment"
       isLoading={isLoading}
       onCancel={onCancel}
       disabled={disabled}
