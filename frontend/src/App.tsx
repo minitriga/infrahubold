@@ -1,3 +1,5 @@
+import { addCollection } from "@iconify-icon/react";
+import mdiIcons from "@iconify-json/mdi/icons.json";
 import { useAtom } from "jotai";
 import * as R from "ramda";
 import { useCallback, useEffect } from "react";
@@ -25,8 +27,6 @@ import { schemaKindNameState } from "./state/atoms/schemaKindName.atom";
 import "./styles/index.css";
 import { sortByOrderWeight } from "./utils/common";
 import { fetchUrl } from "./utils/fetch";
-import mdiIcons from "@iconify-json/mdi/icons.json";
-import { addCollection } from "@iconify-icon/react";
 addCollection(mdiIcons);
 
 function App() {
@@ -126,14 +126,16 @@ function App() {
   // }, [branches?.length, branchInQueryString]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        {MAIN_ROUTES.map((route) => (
-          <Route index key={route.path} path={route.path} element={route.element} />
-        ))}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Route>
-    </Routes>
+    <div>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {MAIN_ROUTES.map((route) => (
+            <Route index key={route.path} path={route.path} element={route.element} />
+          ))}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Route>
+      </Routes>
+    </div>
   );
 }
 

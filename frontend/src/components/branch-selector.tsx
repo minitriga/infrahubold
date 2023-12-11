@@ -175,7 +175,7 @@ export default function BranchSelector() {
   }
 
   return (
-    <div className="flex" data-cy="branch-select-menu">
+    <div className="flex" data-cy="branch-select-menu" id="branch-select-menu">
       <SelectButton
         value={branch}
         valueLabel={valueLabel}

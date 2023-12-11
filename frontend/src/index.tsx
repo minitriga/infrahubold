@@ -6,6 +6,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Slide, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Tour from "reactour";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 import App from "./App";
@@ -25,6 +26,17 @@ import { fetchUrl } from "./utils/fetch";
 const root = ReactDOM.createRoot(
   (document.getElementById("root") || document.createElement("div")) as HTMLElement
 );
+
+const steps = [
+  {
+    target: "#header",
+    content: "1",
+  },
+  {
+    target: "#branch-select-menu",
+    content: "2 ",
+  },
+];
 
 export const Root = () => {
   const [, setBranches] = useAtom(branchesState);
@@ -123,27 +135,48 @@ export const Root = () => {
     );
   }
 
+  // const handleJoyrideCallback = function (data: any) {
+  //   console.log("data:", data);
+  //   // const { action, index, status, type } = data;
+
+  //   // if ([EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND].includes(type)) {
+  //   //   // Update state to advance the tour
+  //   //   setState({ stepIndex: index + (action === ACTIONS.PREV ? -1 : 1) });
+  //   // } else if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+  //   //   // Need to set our running state to false, so we can restart if we click start again.
+  //   //   setState({ run: false });
+  //   // }
+
+  //   // console.groupCollapsed(type);
+  //   // console.log(data); //eslint-disable-line no-console
+  //   // console.groupEnd();
+  // };
+
   return (
-    <BrowserRouter basename="/">
-      <QueryParamProvider
-        adapter={ReactRouter6Adapter}
-        options={{
-          searchStringToObject: queryString.parse,
-          objectToSearchString: queryString.stringify,
-        }}>
-        <ApolloProvider client={graphqlClient}>
-          <ToastContainer
-            hideProgressBar={true}
-            transition={Slide}
-            autoClose={5000}
-            closeOnClick={false}
-            newestOnTop
-            position="bottom-right"
-          />
-          <App />
-        </ApolloProvider>
-      </QueryParamProvider>
-    </BrowserRouter>
+    <>
+      <Tour steps={steps} isOpen />
+
+      <BrowserRouter basename="/">
+        <QueryParamProvider
+          adapter={ReactRouter6Adapter}
+          options={{
+            searchStringToObject: queryString.parse,
+            objectToSearchString: queryString.stringify,
+          }}>
+          <ApolloProvider client={graphqlClient}>
+            <ToastContainer
+              hideProgressBar={true}
+              transition={Slide}
+              autoClose={5000}
+              closeOnClick={false}
+              newestOnTop
+              position="bottom-right"
+            />
+            <App />
+          </ApolloProvider>
+        </QueryParamProvider>
+      </BrowserRouter>
+    </>
   );
 };
 

@@ -117,7 +117,7 @@ export default function Header(props: Props) {
   }
 
   return (
-    <div className="z-10 flex h-16 flex-shrink-0 bg-custom-white shadow">
+    <div className="z-10 flex h-16 flex-shrink-0 bg-custom-white shadow" id="header">
       <button
         type="button"
         className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-custom-blue-500 md:hidden"
