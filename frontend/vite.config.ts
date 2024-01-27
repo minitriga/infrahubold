@@ -8,6 +8,9 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   server: {
     port: 8080,
+    fs: {
+      strict: false,
+    },
   },
   preview: {
     port: 3000,

@@ -9,6 +9,7 @@ import { DatePicker } from "../../components/inputs/date-picker";
 import { QSP } from "../../config/qsp";
 import { datetimeAtom } from "../../state/atoms/time.atom";
 import { debounce } from "../../utils/common";
+import { StarlightDocSearch } from "../StarlightDocSearch";
 
 interface Props {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -66,6 +67,8 @@ export default function Header(props: Props) {
         <DatePicker date={date} onChange={debouncedHandleDateChange} onClickNow={handleClickNow} />
 
         <BranchSelector />
+
+        <StarlightDocSearch />
 
         <AccountMenu />
       </div>
