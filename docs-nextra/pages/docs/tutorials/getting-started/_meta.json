@@ -1,0 +1,13 @@
+{
+  "introduction-to-infrahub":  "Introduction to Infrahub",
+  "schema": "Extend the schema",
+  "creating-an-object": "Creating an object",
+  "branches": "Branches and version control",
+  "historical-data": "Immutable graph and historical data",
+  "lineage-information": "Data lineage & metadata",
+  "git-integration": "Integration with Git",
+  "jinja2-integration": "Rendering configuration",
+  "custom-api-endpoint": "Custom API endpoint",
+  "graphql-query": "Introduction & GraphQL queries",
+  "graphql-mutation": "GraphQL mutation"
+}
