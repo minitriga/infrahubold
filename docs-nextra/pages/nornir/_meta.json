@@ -1,0 +1,12 @@
+{
+  "index": "Introduction",
+  "---": {
+    "type": "separator"
+  },
+  "empty1": "Empty page 1",
+  "--- text": {
+    "title": "Separator as text",
+    "type": "separator"
+  },
+  "empty2": "Empty page 2"
+}

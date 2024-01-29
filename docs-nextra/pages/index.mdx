@@ -1,0 +1,64 @@
+import { Callout, Card, Cards, FileTree, Steps } from "nextra/components";
+
+# Welcome to Nextra
+
+Let's showcase some built-in components:
+
+## Callout
+
+<Callout>
+  A **callout** is a short piece of text intended to attract attention.
+</Callout>
+
+<Callout type="info">
+  A **callout** is a short piece of text intended to attract attention.
+</Callout>
+
+<Callout type="warning">
+  A **callout** is a short piece of text intended to attract attention.
+</Callout>
+
+<Callout type="error">
+  A **callout** is a short piece of text intended to attract attention.
+</Callout>
+
+## Tabs
+
+```sh npm2yarn
+npm i react
+```
+
+## Cards
+
+<Cards>
+  <Card title="Docs" href="/docs" />
+  <Card title="Nornir" href="/nornir" />
+  <Card  title="Home" href="/" />
+</Cards>
+
+## Step
+
+<Steps>
+  ### Step 1
+
+  Contents for step 1.
+
+  ### Step 2
+
+  Contents for step 2.
+</Steps>
+
+## Filetree
+
+<FileTree>
+  <FileTree.Folder name="pages" defaultOpen>
+    <FileTree.File name="_meta.json" />
+    <FileTree.File name="contact.md" />
+    <FileTree.File name="index.mdx" />
+    <FileTree.Folder name="about">
+      <FileTree.File name="_meta.json" />
+      <FileTree.File name="legal.md" />
+      <FileTree.File name="index.mdx" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
