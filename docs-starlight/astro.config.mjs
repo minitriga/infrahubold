@@ -18,6 +18,9 @@ export default defineConfig({
       //     errorOnRelativeLinks: false,
       //   })
       // ],
+      components: {
+        Header: './src/components/Header.astro'
+      },
       favicon: '/favicon.ico',
 			title: 'Docs',
       logo: {
