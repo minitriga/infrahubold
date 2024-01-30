@@ -14,7 +14,7 @@ export const StarlightDocSearch = () => {
     if (query === "") return;
 
     pagefind.search(query).then(({ results }) => {
-      setResult(results.map(({ data }) => data));
+      setResult(results.map(({ data, id }) => ({ data, id })));
     });
   }, [query]);
 
@@ -25,7 +25,7 @@ export const StarlightDocSearch = () => {
           <div>
             <Input placeholder="Search Docs" onChange={setQuery} />
 
-            {query !== "" && <DisplayResults data={result} />}
+            {query !== "" && <DisplayResults results={result} />}
           </div>
         )}
       </PopOver>
@@ -36,45 +36,54 @@ export const StarlightDocSearch = () => {
 const HelpButton = () => <Button type="submit">Starlight</Button>;
 
 const DisplayResults = ({
-  data,
+  results,
 }: {
-  data: Array<() => Promise<{ excerpt: string; raw_url: string; meta: { title: string } }>>;
+  results: Array<{
+    id: string;
+    data: () => Promise<{ excerpt: string; raw_url: string; meta: { title: string } }>;
+  }>;
 }) => {
-  const [visibleData, setVisibleData] = useState<
-    Array<{ excerpt: string; raw_url: string; meta: { title: string } }>
-  >([]);
+  console.log(results);
   const [itemsToShow, setItemsToShow] = useState<number>(5);
-
-  const fetchData = async () => {
-    const results = await Promise.all(data.slice(0, itemsToShow).map((f) => f()));
-    setVisibleData(results);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []); // Fetch on the initial render
 
   const handleLoadMore = () => {
     setItemsToShow((prevItems) => prevItems + 5);
-    fetchData();
   };
 
   return (
     <div>
-      {visibleData.map((item, index) => (
-        <div key={index} className="border-b p-2">
-          <Link to={"http://localhost:4321" + item.raw_url} target="_blank">
-            <h3 className="font-semibold">{item.meta.title}</h3>
-            <p
-              className="truncate overflow-ellipsis"
-              dangerouslySetInnerHTML={{ __html: item.excerpt }}
-            />
-          </Link>
-        </div>
+      {results.slice(0, itemsToShow).map(({ id, data }) => (
+        <Result key={id} data={data} />
       ))}
       <Button onClick={handleLoadMore} className="w-full !block">
         Load More Results
       </Button>
+    </div>
+  );
+};
+
+const Result = ({
+  data,
+}: {
+  data: () => Promise<{ excerpt: string; raw_url: string; meta: { title: string } }>;
+}) => {
+  const [res, setRes] = useState();
+
+  useEffect(() => {
+    data().then(setRes);
+  }, []);
+
+  if (!res) return null;
+
+  return (
+    <div className="border-b p-2">
+      <Link to={"http://localhost:4321" + res.raw_url} target="_blank">
+        <h3 className="font-semibold">{res.meta.title}</h3>
+        <p
+          className="truncate overflow-ellipsis"
+          dangerouslySetInnerHTML={{ __html: res.excerpt }}
+        />
+      </Link>
     </div>
   );
 };

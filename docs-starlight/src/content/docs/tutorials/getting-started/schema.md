@@ -4,7 +4,6 @@ title: Extend the schema
 tags: [tutorial]
 order: 850
 ---
-# Extend the schema
 
 Infrahub can be extended by providing your own schema (or models).
 

@@ -37,6 +37,7 @@ export default defineConfig({
 				github: 'https://github.com/opsmill/infrahub',
 			},
 			sidebar: [
+        { label: 'Home', link: '/' },
 				{
 					label: 'Tutorials',
           collapsed: true,

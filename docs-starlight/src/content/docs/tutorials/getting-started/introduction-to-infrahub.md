@@ -5,8 +5,6 @@ tags: [tutorial]
 order: 900
 ---
 
-# Introduction to Infrahub
-
 Before starting this tutorial, let's take a moment to explore how Infrahub is organized as an application and how we can interact with it.
 
 ## Infrahub components

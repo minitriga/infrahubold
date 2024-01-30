@@ -2,8 +2,6 @@
 title: Data lineage & metadata
 ---
 
-# Data lineage and metadata
-
 One of the core features of Infrahub is that we can define `metadata` on all data points: attributes and relationships.
 
 The current supported metadata are:

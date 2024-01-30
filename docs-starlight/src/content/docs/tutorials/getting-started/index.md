@@ -2,8 +2,6 @@
 title: Getting started with Infrahub
 ---
 
-# Getting started with Infrahub
-
 This tutorial will get you started with Infrahub and it will help you get familiar with some of the main components and concepts behind Infrahub. To do that we'll use a sample dataset that represents a small network with 6 devices. This tutorial will teach you:
 
 - How to manage branches and query any branches.
