@@ -717,6 +717,64 @@ class RelationshipGetQuery(RelationshipQuery):
         self.return_labels = ["s", "d", "rl", "r1", "r2"]
 
 
+class RelationshipGetByIdentifierQuery(Query):
+    name = "relationship_get_identifier"
+
+    type: QueryType = QueryType.READ
+
+    def __init__(
+        self,
+        identifiers: List[str],
+        *args,
+        **kwargs,
+    ):
+        self.identifiers = identifiers
+
+        super().__init__(*args, **kwargs)
+
+    async def query_init(self, db: InfrahubDatabase, *args, **kwargs):
+        self.params["identifiers"] = self.identifiers
+        self.params["branch"] = self.branch.name
+
+        rels_filter, rels_params = self.branch.get_query_filter_relationships(
+            rel_labels=["r1", "r2"], at=self.at.to_string(), include_outside_parentheses=True
+        )
+
+        self.params.update(rels_params)
+
+        query = """
+        MATCH (rl:Relationship)
+        WHERE rl.name IN $identifiers
+        CALL {
+            WITH rl
+            MATCH (src:Node)-[r1:IS_RELATED]-(rl:Relationship)-[r2:IS_RELATED]-(dst:Node)
+            WHERE %s
+            RETURN src, dst, r1, r2, rl as rl1
+            ORDER BY r1.branch_level DESC, r2.branch_level DESC, r1.from DESC, r2.from DESC
+            LIMIT 1
+        }
+        WITH src, dst, r1, r2, rl1 as rl
+        WHERE r1.status = "active" AND r2.status = "active"
+        """ % ("\n AND ".join(rels_filter),)
+
+        self.params["at"] = self.at.to_string()
+
+        self.add_to_query(query)
+        self.return_labels = ["src", "dst", "rl"]
+
+    async def get_peers(self):
+        response = []
+        for result in self.get_results():
+            result.get("s")
+            response.append(
+                (
+                    (result.get("s").get("uuid"), result.get("s").get("kind")),
+                    (result.get("d").get("uuid"), result.get("d").get("kind")),
+                )
+            )
+        return response
+
+
 class RelationshipCountPerNodeQuery(Query):
     name = "relationship_count_per_node"
     type: QueryType = QueryType.READ

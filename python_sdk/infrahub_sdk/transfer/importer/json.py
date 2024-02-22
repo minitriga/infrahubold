@@ -13,7 +13,7 @@ from infrahub_sdk.batch import InfrahubBatch
 from infrahub_sdk.client import InfrahubClient
 from infrahub_sdk.exceptions import GraphQLError
 from infrahub_sdk.node import InfrahubNode, RelatedNode, RelationshipManager
-from infrahub_sdk.transfer.schema_sorter import InfrahubSchemaTopologicalSorter
+from infrahub_sdk.schema_sorter import InfrahubSchemaTopologicalSorter
 
 from ..exceptions import TransferFileNotFoundError
 from .interface import ImporterInterface
@@ -72,7 +72,7 @@ class LineDelimitedJSONImporter(ImporterInterface):
         self.schemas_by_kind = {schema.kind: schema for schema in schemas}
 
         with self.wrapped_task_output("Ordering schema for import"):
-            ordered_schema_names = await self.topological_sorter.get_sorted_node_schema(schemas)
+            ordered_schema_names = self.topological_sorter.get_sorted_node_schema(schemas)
 
         with self.wrapped_task_output("Preparing nodes for import"):
             await self.remove_and_store_optional_relationships()
