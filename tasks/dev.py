@@ -13,6 +13,7 @@ from .container_ops import (
     show_service_status,
     start_services,
     stop_services,
+    migrate_database
 )
 from .infra_ops import load_infrastructure_data, load_infrastructure_schema
 from .shared import (
@@ -180,3 +181,9 @@ def start(context: Context, database: str = INFRAHUB_DATABASE):
 def stop(context: Context, database: str = INFRAHUB_DATABASE):
     """Stop the running instance of Infrahub."""
     stop_services(context=context, database=database, namespace=NAMESPACE)
+
+
+@task(optional=["database"])
+def migrate(context: Context, database: str = INFRAHUB_DATABASE):
+    """Apply the latest database migrations."""
+    migrate_database(context=context, database=database, namespace=NAMESPACE)

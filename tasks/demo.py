@@ -13,6 +13,7 @@ from .container_ops import (
     show_service_status,
     start_services,
     stop_services,
+    migrate_database,
 )
 from .infra_ops import load_infrastructure_data, load_infrastructure_schema
 from .shared import (
@@ -77,10 +78,16 @@ def stop(context: Context, database: str = INFRAHUB_DATABASE):
     stop_services(context=context, database=database, namespace=NAMESPACE)
 
 
-@task
+@task(optional=["database"])
 def destroy(context: Context, database: str = INFRAHUB_DATABASE):
     """Destroy all containers and volumes."""
     destroy_environment(context=context, database=database, namespace=NAMESPACE)
+
+
+@task(optional=["database"])
+def migrate(context: Context, database: str = INFRAHUB_DATABASE):
+    """Apply the latest database migrations."""
+    migrate_database(context=context, database=database, namespace=NAMESPACE)
 
 
 @task(optional=["database"])
