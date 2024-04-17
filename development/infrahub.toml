@@ -11,14 +11,6 @@ address = "database"
 port = 7687
 protocol = "bolt"
 
-[broker]
-address = "message-queue"
-username = "infrahub"
-password = "infrahub"
-
-[cache]
-address = "cache"
-
 [storage]
 driver = "local"
 
