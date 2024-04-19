@@ -47,6 +47,7 @@ const sidebars: SidebarsConfig = {
         'guides/python-transform',
         'guides/artifact',
         'guides/database-backup',
+	'guides/profiles',
       ],
     },
     {
@@ -71,6 +72,7 @@ const sidebars: SidebarsConfig = {
         'topics/auth',
         'topics/database-backup',
         'topics/resources-testing-framework',
+	'topics/profiles',
       ],
     },
     {
