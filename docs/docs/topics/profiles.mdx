@@ -22,14 +22,14 @@ In that case we could create an interface profile with the name "user-interface"
 
 When you create a device in a source of truth, such as Infrahub, you might want to have a template for the different device types that you deploy in your network. A device template should contain the details of the manufacturer, type, platform, module slots, interfaces etc.
 
-Creating a device profile capturing these common set of device attributes, would allow you to create such a templated that can be used to create multiple instances of such a device.
+Creating a device profile capturing these common set of device attributes, would allow you to create such a template that can be used to create multiple instances of such a device.
 
 ## Current limitations
 
 - Profiles can only be statically assigned to nodes. In a future release you will be able to dynamically assign profiles to nodes.
 - Profiles can only define attributes, it is currently not yet possible to define relationships
 - Profiles can only define attributes that are not part of a unique constraint in the Node schema
-- Required attributes of a Node must have a default value defined in the schema, if you want to define these atrributes using profiles
+- Required attributes of a Node must have a default value defined in the schema, if you want to define these attributes using profiles
 
 ## Dynamic generation
 
@@ -43,7 +43,7 @@ Infrahub will also generate the GraphQL query and mutations to be able to perfor
 
 | Type     | Name                        |
 |----------|-----------------------------|
-| qeury    | ProfileInfraInterface       |
+| query    | ProfileInfraInterface       |
 | mutation | ProfileInfraInterfaceCreate |
 | mutation | ProfileInfraInterfaceUpdate |
 | mutation | ProfileInfraInterfaceUpsert |
