@@ -185,14 +185,6 @@ mutation {
       id
     }
   }
-  int3: InfraInterfaceCreate(
-    data: {name: {value: "GigabitEthernet0/0/3"}, profiles: [{id: "17c7a464-0482-381b-3137-c513ffc68c84"}]}
-  ) {
-    ok
-    object {
-      id
-    }
-  }
 }
 ```
 
@@ -222,3 +214,37 @@ query {
 ```
 
 On the name attribute we can see that the `is_from_profile` property is `False`, indicating the name attribute was not inherited from a profile. The status attribute has the `is_from_profile` property set to `True` and the `source__id` property is set to the id of the profile from which the value was inherited.
+
+## Overriding profile attribute values
+
+We will now create another interface `GigabitEthernet0/0/3` using the profile. But we want to override the value of the MTU attribute, which is defined in the profile. To do this we have to explicitly provide a value for the attribute.
+
+```graphql
+mutation {
+  InfraInterfaceCreate(
+    data: {name: {value: "GigabitEthernet0/0/3"}, mtu: {value: 9000}, profiles: [{id: "17c7a464-0482-381b-3137-c513ffc68c84"}]}
+  ) {
+    ok
+    object {
+      id
+    }
+  }
+}
+```
+
+Using this query we can verify that the value for the MTU attribute and that it was not inherited from a profile.
+
+```query
+query {
+  InfraInterface(name__value: "GigabitEthernet0/0/3") {
+    edges {
+      node {
+        mtu {
+          value
+          is_from_profile
+        }
+      }
+    }
+  }
+}
+```
