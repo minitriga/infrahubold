@@ -184,7 +184,6 @@ def stop(context: Context, database: str = INFRAHUB_DATABASE):
     stop_services(context=context, database=database, namespace=NAMESPACE)
 
 
-
 @task(optional=["database"])
 def migrate(context: Context, database: str = INFRAHUB_DATABASE):
     """Apply the latest database migrations."""
