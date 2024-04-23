@@ -59,6 +59,7 @@ import { RelationshipsDetails } from "./relationships-details-paginated";
 import Content from "../layout/content";
 import { usePermission } from "../../hooks/usePermission";
 import { ButtonWithTooltip } from "../../components/buttons/button-with-tooltip";
+import { Badge } from "../../components/ui/badge";
 
 export default function ObjectItemDetails(props: any) {
   const { objectname: objectnameFromProps, objectid: objectidFromProps, hideHeaders } = props;
@@ -324,6 +325,16 @@ export default function ObjectItemDetails(props: any) {
                           </div>
                         }
                       />
+                    )}
+
+                    {objectDetailsData[attribute.name].is_from_profile && (
+                      <div className="flex items-center gap-1 text-gray-600">
+                        from{" "}
+                        <Badge variant="green" className="font-normal">
+                          <Icon icon="mdi:shape-plus-outline" className="mr-1" />
+                          {objectDetailsData[attribute.name].source.display_label}
+                        </Badge>
+                      </div>
                     )}
 
                     {objectDetailsData[attribute.name].is_protected && (
