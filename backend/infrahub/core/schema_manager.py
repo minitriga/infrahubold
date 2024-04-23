@@ -1142,7 +1142,7 @@ class SchemaBranch:
             if isinstance(schema, ProfileSchema) or schema.namespace == "Profile":
                 continue
 
-            if schema.kind in (InfrahubKind.LINEAGEOWNER, InfrahubKind.LINEAGESOURCE):
+            if schema.kind in (InfrahubKind.LINEAGEOWNER, InfrahubKind.LINEAGESOURCE, InfrahubKind.PROFILE):
                 continue
 
             if "member_of_groups" not in schema.relationship_names:
@@ -1186,6 +1186,7 @@ class SchemaBranch:
                 continue
 
             node = node.duplicate()
+            read_only = InfrahubKind.IPPREFIX in node.inherit_from
 
             if node.parent and "parent" not in node.relationship_names:
                 node.relationships.append(
@@ -1199,6 +1200,7 @@ class SchemaBranch:
                         branch=BranchSupportType.AWARE,
                         direction=RelationshipDirection.OUTBOUND,
                         hierarchical=node.hierarchy,
+                        read_only=read_only,
                     )
                 )
 
@@ -1213,6 +1215,7 @@ class SchemaBranch:
                         branch=BranchSupportType.AWARE,
                         direction=RelationshipDirection.INBOUND,
                         hierarchical=node.hierarchy,
+                        read_only=read_only,
                     )
                 )
 
@@ -1261,7 +1264,8 @@ class SchemaBranch:
             description=f"Profile for {node.kind}",
             branch=node.branch,
             include_in_menu=False,
-            inherit_from=[InfrahubKind.LINEAGESOURCE],
+            display_labels=["profile_name__value"],
+            inherit_from=[InfrahubKind.LINEAGESOURCE, InfrahubKind.PROFILE],
             default_filter="profile_name__value",
             attributes=[
                 AttributeSchema(

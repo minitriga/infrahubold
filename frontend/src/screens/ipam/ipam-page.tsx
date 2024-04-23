@@ -1,22 +1,22 @@
+import { Outlet } from "react-router-dom";
+
 import { Card } from "../../components/ui/card";
 import Content from "../layout/content";
-import IpamRouter from "./ipam-router";
-import IpamTree from "./ipam-tree";
+import IpamTree from "./ipam-tree/ipam-tree";
 
 export default function IpamPage() {
   return (
     <>
       <Content.Title title="IP Address Manager" />
-      <Content>
-        <div className="p-2 flex flex-wrap gap-2 items-stretch min-h-full">
-          <Card>
-            <IpamTree />
-          </Card>
 
-          <Card className="flex-grow p-0 overflow-hidden">
-            <IpamRouter />
-          </Card>
-        </div>
+      <Content className="flex p-2 gap-2">
+        <Card className="overflow-auto">
+          <IpamTree />
+        </Card>
+
+        <section className="flex-grow">
+          <Outlet />
+        </section>
       </Content>
     </>
   );

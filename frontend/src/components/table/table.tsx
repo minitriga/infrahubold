@@ -20,10 +20,11 @@ type tTableProps = {
   rows: tRow[];
   constructLink?: Function;
   onDelete?: Function;
+  onUpdate?: Function;
 };
 
 export const Table = (props: tTableProps) => {
-  const { columns, rows, onDelete } = props;
+  const { columns, rows, onDelete, onUpdate } = props;
 
   const auth = useAuth();
 
@@ -37,7 +38,7 @@ export const Table = (props: tTableProps) => {
                 {column.label}
               </th>
             ))}
-            {onDelete && <th scope="col"></th>}
+            {(onUpdate || onDelete) && <th scope="col"></th>}
           </tr>
         </thead>
 
@@ -56,29 +57,41 @@ export const Table = (props: tTableProps) => {
                     <Link
                       className="whitespace-wrap px-2 py-1 text-xs text-gray-900 flex items-center"
                       to={row.link}>
-                      <div>{row.values[column.name]}</div>
+                      {row.values[column.name] ?? "-"}
                     </Link>
                   )}
 
                   {!row.link && (
                     <div className="whitespace-wrap px-2 py-1 text-xs text-gray-900 flex items-center">
-                      {row.values[column.name]}
+                      {row.values[column.name] ?? "-"}
                     </div>
                   )}
                 </td>
               ))}
 
-              {onDelete && (
-                <td className="text-right w-8">
-                  <Button
-                    data-cy="delete"
-                    disabled={!auth?.permissions?.write}
-                    buttonType={BUTTON_TYPES.INVISIBLE}
-                    onClick={() => {
-                      onDelete(row);
-                    }}>
-                    <Icon icon="mdi:trash" className="text-red-500" />
-                  </Button>
+              {(onUpdate || onDelete) && (
+                <td className="text-right">
+                  {onUpdate && (
+                    <Button
+                      disabled={!auth?.permissions?.write}
+                      buttonType={BUTTON_TYPES.INVISIBLE}
+                      onClick={() => {
+                        onUpdate(row);
+                      }}>
+                      <Icon icon="mdi:pencil-outline" className="text-custom-blue-500" />
+                    </Button>
+                  )}
+
+                  {onDelete && (
+                    <Button
+                      disabled={!auth?.permissions?.write}
+                      buttonType={BUTTON_TYPES.INVISIBLE}
+                      onClick={() => {
+                        onDelete(row);
+                      }}>
+                      <Icon icon="mdi:trash" className="text-red-500" />
+                    </Button>
+                  )}
                 </td>
               )}
             </tr>

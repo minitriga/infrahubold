@@ -11,7 +11,7 @@ import { currentBranchAtom } from "../state/atoms/branches.atom";
 import { datetimeAtom } from "../state/atoms/time.atom";
 import usePagination from "./usePagination";
 
-const useQuery = (QUERY: any, options?: OperationVariables) => {
+const useQuery: typeof useApolloQuery = (QUERY, options?: OperationVariables) => {
   const branch = useAtomValue(currentBranchAtom);
   const date = useAtomValue(datetimeAtom);
   const [{ offset, limit }] = usePagination();
@@ -29,7 +29,10 @@ const useQuery = (QUERY: any, options?: OperationVariables) => {
   });
 };
 
-export const useLazyQuery = (QUERY: any, options?: OperationVariables) => {
+export const useLazyQuery: typeof useApolloLazyQuery = (
+  QUERY: any,
+  options?: OperationVariables
+) => {
   const branch = useAtomValue(currentBranchAtom);
   const date = useAtomValue(datetimeAtom);
 

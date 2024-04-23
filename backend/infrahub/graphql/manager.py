@@ -18,6 +18,7 @@ from .metrics import SCHEMA_GENERATE_GRAPHQL_METRICS
 from .mutations import (
     InfrahubArtifactDefinitionMutation,
     InfrahubIPAddressMutation,
+    InfrahubIPNamespaceMutation,
     InfrahubIPPrefixMutation,
     InfrahubMutation,
     InfrahubProposedChangeMutation,
@@ -358,6 +359,7 @@ class GraphQLSchemaManager:  # pylint: disable=too-many-public-methods
                 InfrahubKind.READONLYREPOSITORY: InfrahubRepositoryMutation,
                 InfrahubKind.PROPOSEDCHANGE: InfrahubProposedChangeMutation,
                 InfrahubKind.GRAPHQLQUERY: InfrahubGraphQLQueryMutation,
+                InfrahubKind.NAMESPACE: InfrahubIPNamespaceMutation,
             }
 
             if isinstance(node_schema, NodeSchema) and node_schema.is_ip_prefix():
@@ -523,7 +525,7 @@ class GraphQLSchemaManager:  # pylint: disable=too-many-public-methods
             attrs[attr.name] = graphene.InputField(attr_type, required=required, description=attr.description)
 
         for rel in schema.relationships:
-            if rel.internal_peer:
+            if rel.internal_peer or rel.read_only:
                 continue
             required = not rel.optional
             if rel.cardinality == "one":
@@ -559,7 +561,7 @@ class GraphQLSchemaManager:  # pylint: disable=too-many-public-methods
             attrs[attr.name] = graphene.InputField(attr_type, required=False, description=attr.description)
 
         for rel in schema.relationships:
-            if rel.internal_peer:
+            if rel.internal_peer or rel.read_only:
                 continue
             if rel.cardinality == "one":
                 attrs[rel.name] = graphene.InputField(RelatedNodeInput, required=False, description=rel.description)
@@ -599,7 +601,7 @@ class GraphQLSchemaManager:  # pylint: disable=too-many-public-methods
             attrs[attr.name] = graphene.InputField(attr_type, required=required, description=attr.description)
 
         for rel in schema.relationships:
-            if rel.internal_peer:
+            if rel.internal_peer or rel.read_only:
                 continue
             required = not rel.optional
             if rel.cardinality == "one":

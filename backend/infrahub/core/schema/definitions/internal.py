@@ -481,7 +481,7 @@ attribute_schema = SchemaNode(
         SchemaAttribute(
             name="regex",
             kind="Text",
-            description="Regex uses to limit limit the characters allowed in for the attributes.",
+            description="Regex uses to limit the characters allowed in for the attributes.",
             optional=True,
             extra={"update": UpdateSupport.VALIDATE_CONSTRAINT},
         ),
@@ -787,6 +787,14 @@ relationship_schema = SchemaNode(
             description="Type of allowed override for the relationship.",
             enum=AllowOverrideType.available_types(),
             default_value=AllowOverrideType.ANY,
+            optional=True,
+            extra={"update": UpdateSupport.ALLOWED},
+        ),
+        SchemaAttribute(
+            name="read_only",
+            kind="Boolean",
+            description="Set the relationship as read-only, users won't be able to change its value.",
+            default_value=False,
             optional=True,
             extra={"update": UpdateSupport.ALLOWED},
         ),
