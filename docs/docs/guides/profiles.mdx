@@ -201,6 +201,7 @@ query {
         }
         status {
           value
+          is_default
           is_from_profile
           source {
             id
@@ -213,7 +214,9 @@ query {
 }
 ```
 
-On the name attribute we can see that the `is_from_profile` property is `False`, indicating the name attribute was not inherited from a profile. The status attribute has the `is_from_profile` property set to `True` and the `source__id` property is set to the id of the profile from which the value was inherited.
+On the name attribute we can see that the `is_from_profile` property is `False`, indicating the name attribute was not inherited from a profile. The status attribute has the `is_from_profile` property set to `True` and the `source__id` property is set to the id of the profile from which the value was inherited. 
+
+The status attribute value is inherited from the profile, because we didn't specify a value for that attribute when we created the interface, hence the `is_default` property of the status attribute is `True`.
 
 ## Overriding profile attribute values
 
