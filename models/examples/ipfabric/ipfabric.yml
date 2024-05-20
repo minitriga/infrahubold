@@ -1,6 +1,51 @@
 ---
 version: '1.0'
 generics:
+  - name: Interface
+    namespace: Infra
+    description: "Generic Network Interface"
+    label: "Interface"
+    icon: "mdi:ethernet"
+    include_in_menu: false
+    menu_placement: "InfraDevice"
+    display_labels:
+      - name__value
+    order_by:
+      - name__value
+    uniqueness_constraints:
+      - ["device", "name__value"]
+    attributes:
+      - name: name
+        kind: Text
+      - name: description
+        kind: Text
+        optional: true
+      - name: speed
+        kind: Number
+        optional: true
+      - name: mtu
+        label: MTU
+        default_value: 2000
+        kind: Number
+      - name: enabled
+        kind: Boolean
+        default_value: true
+      - name: mac_address
+        label: Mac Address
+        kind: Text
+        optional: true
+    relationships:
+      - name: device
+        peer: InfraDevice
+        identifier: "device__interface"
+        optional: false
+        cardinality: one
+        kind: Parent
+      - name: tags
+        peer: BuiltinTag
+        optional: true
+        cardinality: many
+        kind: Attribute
   - name: Choice
     namespace: Template
     description: "Generic Choice"
@@ -27,6 +72,18 @@ generics:
         optional: true
         cardinality: many
         kind: Attribute
+  - name: Endpoint
+    namespace: Infra
+    description: "Generic Endpoint to connect two objects together."
+    include_in_menu: false
+    label: "Endpoint"
+    relationships:
+      - name: connected_endpoint
+        peer: InfraEndpoint
+        optional: true
+        cardinality: one
+        kind: Attribute
+        identifier: connected__endpoint
 nodes:
   - name: Organization
     namespace: Core
@@ -219,6 +276,13 @@ nodes:
         peer: InfraNOSVersion
         kind: Attribute
         cardinality: one
+      - name: interfaces
+        label: Interfaces
+        peer: InfraInterface
+        identifier: "device__interface"
+        optional: true
+        cardinality: many
+        kind: Component
       - name: tags
         peer: BuiltinTag
         optional: true
@@ -306,6 +370,7 @@ nodes:
     label: "VLAN"
     icon: "mdi:lan-pending"   # mdi:lan
     default_filter: name__value
+    menu_placement: "InfraIPAddress"
     order_by:
       - vlan_id__value
     display_labels:
@@ -332,6 +397,7 @@ nodes:
     label: "VRF"
     icon: "mdi:router"
     default_filter: name__value
+    menu_placement: "InfraIPAddress"
     order_by:
       - name__value
     display_labels:
@@ -346,3 +412,116 @@ nodes:
         label: Route Distinguisher
         kind: Text
         optional: true
+    relationships:
+      - name: prefix
+        label: Prefix
+        peer: InfraPrefix
+        optional: true
+        cardinality: many
+        kind: Generic
+  - name: InterfaceL3
+    namespace: Infra
+    description: "Network Layer 3 Interface"
+    label: "Interface L3"
+    icon: "mdi:ethernet"
+    menu_placement: "InfraDevice"
+    include_in_menu: true
+    display_labels:
+      - name__value
+    order_by:
+      - name__value
+    inherit_from:
+      - "InfraInterface"
+      - "InfraEndpoint"
+      - "CoreArtifactTarget"
+    relationships:
+      - name: ip_addresses
+        peer: InfraIPAddress
+        optional: true
+        cardinality: many
+        kind: Component
+  - name: IPAddress
+    namespace: Infra
+    description: "IP Address"
+    label: "IP Address"
+    icon: "mdi:ip"
+    default_filter: address__value
+    order_by:
+      - "address__value"
+    display_labels:
+      - address__value
+    attributes:
+      - name: address
+        kind: IPHost
+      - name: description
+        kind: Text
+        optional: true
+    relationships:
+      - name: interface
+        peer: InfraInterfaceL3
+        optional: true
+        cardinality: one
+      - name: prefix
+        peer: InfraPrefix
+        optional: true
+        cardinality: one
+  - name: Prefix
+    namespace: Infra
+    description: "IPv4 or IPv6 network (with mask)"
+    icon: "mdi:ip-network"
+    label: "Prefix"
+    default_filter: prefix__value
+    menu_placement: "InfraIPAddress"
+    order_by:
+      - vrf__name__value
+      - prefix__value
+    display_labels:
+      - prefix__value
+    uniqueness_constraints:
+        - [ "vrf", "prefix__value"]
+    attributes:
+      - name: prefix
+        kind: IPNetwork
+        order_weight: 1000
+      - name: description
+        kind: Text
+        optional: true
+        order_weight: 1100
+    relationships:
+      - name: organization
+        peer: CoreOrganization
+        optional: true
+        cardinality: one
+        kind: Attribute
+        order_weight: 1200
+      - name: location
+        peer: BuiltinLocation
+        optional: true
+        cardinality: one
+        kind: Attribute
+        order_weight: 1300
+      - name: gateway
+        label: L3 Gateway
+        identifier: "prefix__gateway"
+        peer: InfraIPAddress
+        optional: true
+        cardinality: one
+        kind: Attribute
+        order_weight: 1500
+      - name: vrf
+        peer: InfraVRF
+        optional: true
+        cardinality: one
+        kind: Attribute
+        order_weight: 1450
+      - name: vlan
+        peer: InfraVLAN
+        optional: true
+        cardinality: one
+        kind: Attribute
+        order_weight: 1400
+      - name: ip_addresses
+        peer: InfraIPAddress
+        cardinality: many
+        kind: Component
+        order_weight: 1600

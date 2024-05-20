@@ -4,9 +4,12 @@ from .sync_models import (
     BuiltinLocation,
     CoreOrganization,
     InfraDevice,
+    InfraIPAddress,
+    InfraInterfaceL3,
     InfraNOSVersion,
     InfraPartNumber,
     InfraPlatform,
+    InfraPrefix,
     InfraVLAN,
     InfraVRF,
     TemplateDeviceType,
@@ -23,8 +26,11 @@ class IpfabricsyncSync(IpfabricsyncAdapter):
     CoreOrganization = CoreOrganization
     InfraDevice = InfraDevice
     InfraNOSVersion = InfraNOSVersion
+    InfraPartNumber = InfraPartNumber
     InfraPlatform = InfraPlatform
-    TemplateDeviceType = TemplateDeviceType
     InfraVLAN = InfraVLAN
     InfraVRF = InfraVRF
-    InfraPartNumber = InfraPartNumber
+    TemplateDeviceType = TemplateDeviceType
+    InfraInterfaceL3 = InfraInterfaceL3
+    InfraIPAddress = InfraIPAddress
+    InfraPrefix = InfraPrefix

@@ -118,7 +118,10 @@ class IpfabricsyncAdapter(DiffSyncMixin, DiffSync):
             elif not field_is_list and field.mapping and not field.reference:
                 value = obj.get(field.mapping)
                 if value is not None:
-                    data[field.name] = value
+                      if mapping.name == "InfraInterfaceL3" and field.name == "speed":
+                          data[field.name] = value / 1000
+                      else:
+                          data[field.name] = value
             elif field_is_list and field.mapping and not field.reference:
                 raise NotImplementedError(
                     "it's not supported yet to have an attribute of type list with a simple mapping"
@@ -141,9 +144,14 @@ class IpfabricsyncAdapter(DiffSyncMixin, DiffSync):
                         node_id = self.build_mapping(field.reference, obj)
                         matching_nodes = [item for item in nodes if str(item) == node_id]
                         if len(matching_nodes) == 0:
-                            raise IndexError(f"Unable to locate the node {model} {node_id}")
-                        node = matching_nodes[0]
-                        data[field.name] = node.get_unique_id()
+                            if mapping.name == "InfraIPAddress":
+                                data[field.name] = None
+                            else:
+                              # For some reason IP Fabric has IP's without managed networks
+                              raise IndexError(f"Unable to locate the node {model} {node_id}")
+                        else:
+                          node = matching_nodes[0]
+                          data[field.name] = node.get_unique_id()
 
         return data
 
